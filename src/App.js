@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Note from "./components/Note";
-import axios from "axios";
+// import axios from "axios";
+import noteService from "./services/notes";
 
 const App = (props) => {
   const [notes, setNotes] = useState([]);
@@ -8,11 +9,16 @@ const App = (props) => {
   const [showAll, setShowAll] = useState(true);
 
   useEffect(() => {
-    console.log("effect");
-    axios.get("http://localhost:3001/notes").then((response) => {
-      console.log("promise fulfilled");
-      setNotes(response.data);
-    });
+    // console.log("effect");
+    // axios.get("http://localhost:3001/notes").then((response) => {
+    //   console.log("promise fulfilled");
+    //   setNotes(response.data);
+    // });
+    noteService
+      .getAll()
+      .then((initialNotes) => {
+        setNotes(initialNotes);
+      });
   }, []);
   console.log("render", notes.length, "notes");
 
@@ -24,11 +30,17 @@ const App = (props) => {
       important: Math.random() < 0.5,
     };
 
-    axios.post("http://localhost:3001/notes", noteObject).then((response) => {
-      console.log(response);
-      setNotes(notes.concat(response.data));
-      setNewNote("");
-    });
+    // axios.post("http://localhost:3001/notes", noteObject).then((response) => {
+    //   console.log(response);
+    //   setNotes(notes.concat(response.data));
+    //   setNewNote("");
+    // });
+    noteService
+      .create(noteObject)
+      .then((returnedNote) => {
+        setNotes(notes.concat(returnedNote));
+        setNewNote("");
+      });
   };
 
   const handleNoteChange = (event) => {
@@ -39,15 +51,20 @@ const App = (props) => {
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   const toggleImportanceOf = (id) => {
-    const url = `http://localhost:3001/notes/${id}`;
+    // const url = `http://localhost:3001/notes/${id}`;
     const noteToToggle = notes.find((note) => note.id === id);
-    const changedNote = { ...noteToToggle, important: !noteToToggle.important }
+    const changedNote = { ...noteToToggle, important: !noteToToggle.important };
 
-    axios
-      .put(url, changedNote)
-      .then((response) => {
-        setNotes(notes.map((note) => note.id !== id ? note : response.data))
-      })
+    // axios
+    //   .put(url, changedNote)
+    //   .then((response) => {
+    //     setNotes(notes.map((note) => note.id !== id ? note : response.data))
+    //   })
+    noteService
+      .update(id, changedNote)
+      .then((returnedNote) => {
+        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+      });
   };
 
   return (
