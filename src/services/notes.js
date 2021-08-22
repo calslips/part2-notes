@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:3001/notes";
+const baseURL = "http://localhost:3001/api/notes";
 
 /*  GET request to test ERROR handling & errorMessage
 const getAll = () => {
