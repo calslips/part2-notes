@@ -2,42 +2,31 @@ import React, { useState, useEffect } from "react";
 import Note from "./components/Note";
 import Notification from "./components/Notification";
 import Footer from "./components/Footer";
-// import axios from "axios";
 import noteService from "./services/notes";
 
 const App = (props) => {
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState("a new note...");
+  const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
-    // console.log("effect");
-    // axios.get("http://localhost:3001/notes").then((response) => {
-    //   console.log("promise fulfilled");
-    //   setNotes(response.data);
-    // });
     noteService
       .getAll()
       .then((initialNotes) => {
         setNotes(initialNotes);
       });
   }, []);
-  console.log("render", notes.length, "notes");
+  // console.log("render", notes.length, "notes");
 
   const addNote = (event) => {
     event.preventDefault();
     const noteObject = {
       content: newNote,
       date: new Date().toISOString(),
-      important: Math.random() < 0.5,
+      important: Math.random() > 0.5,
     };
 
-    // axios.post("http://localhost:3001/notes", noteObject).then((response) => {
-    //   console.log(response);
-    //   setNotes(notes.concat(response.data));
-    //   setNewNote("");
-    // });
     noteService
       .create(noteObject)
       .then((returnedNote) => {
@@ -54,15 +43,9 @@ const App = (props) => {
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   const toggleImportanceOf = (id) => {
-    // const url = `http://localhost:3001/notes/${id}`;
     const noteToToggle = notes.find((note) => note.id === id);
     const changedNote = { ...noteToToggle, important: !noteToToggle.important };
 
-    // axios
-    //   .put(url, changedNote)
-    //   .then((response) => {
-    //     setNotes(notes.map((note) => note.id !== id ? note : response.data))
-    //   })
     noteService
       .update(id, changedNote)
       .then((returnedNote) => {
@@ -75,7 +58,6 @@ const App = (props) => {
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
-        // setNotes(notes.filter((note) => note.id !== id))
       });
   };
 
