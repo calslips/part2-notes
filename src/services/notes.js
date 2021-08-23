@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:3001/api/notes";
+// const baseURL = "http://localhost:3001/api/notes";
+
+const baseURL = "https://young-plateau-08143.herokuapp.com/";
 
 /*  GET request to test ERROR handling & errorMessage
 const getAll = () => {
