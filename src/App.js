@@ -29,8 +29,9 @@ const App = (props) => {
 
     noteService
       .create(noteObject)
-      .then((returnedNote) => {
-        setNotes(notes.concat(returnedNote));
+      .then((newNotes) => {
+        console.log('create note returned note:', newNotes);
+        setNotes(newNotes);
         setNewNote("");
       });
   };
